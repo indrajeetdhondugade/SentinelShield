@@ -25,7 +25,7 @@ This project was built as a hands-on cybersecurity practical, with the explicit 
 ## Tech Stack
 
 | Component | Technology |
-
+|---|---|
 | Language | Python 3 |
 | Web Framework | Flask |
 | Detection Engine | Python `re` (regular expressions) |
@@ -36,12 +36,15 @@ This project was built as a hands-on cybersecurity practical, with the explicit 
 
 ## Project Structure
 
+```
 SentinelShield/
 ├── sentinelshield.py      # Main Flask application — all routes, rules, and logic
 ├── requirements.txt       # Python dependencies
 ├── .gitignore
 ├── LICENSE
 ├── README.md
+└── Screenshot/           # Development and testing screenshots
+```
 
 > **Note:** `sentinel_log.csv`, the audit log file, is auto-generated the first time you run the app. It is intentionally excluded from this repository via `.gitignore`, since it fills up with your own local test data every time you run the project.
 
@@ -56,23 +59,25 @@ SentinelShield/
 ### Installation
 
 1. Clone the repository:
-```bash
+   ```bash
    git clone https://github.com/indrajeetdhondugade/SentinelShield.git
    cd SentinelShield
-```
+   ```
 
 2. Install the dependencies:
-```bash
-   pip install flask
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 3. Run the application:
-```bash
+   ```bash
    python sentinelshield.py
-```
+   ```
 
 4. The server will start at:
-http://127.0.0.1:5000
+   ```
+   http://127.0.0.1:5000
+   ```
 
 ---
 
@@ -88,17 +93,29 @@ SentinelShield exposes four endpoints:
 | `/dashboard` | Live analytics dashboard with attack statistics |
 
 ### Example: A clean request
+```
 http://127.0.0.1:5000/inspect?name=john
+```
 Returns an **ALLOWED** verdict.
 
 ### Example: A SQL Injection attempt
+```
+http://127.0.0.1:5000/inspect?q=' OR '1'='1
+```
+Returns a **BLOCKED [SQL Injection]** verdict.
+
+### Example: An XSS attempt
+```
 http://127.0.0.1:5000/inspect?q=<script>alert(1)</script>
+```
 Returns a **BLOCKED [XSS]** verdict.
 
 ### Example: Triggering the rate limiter
 Send more than 5 requests to `/inspect` within 10 seconds from the same IP — the 6th request will return:
-
+```
 STATUS: BLOCKED - RATE LIMIT EXCEEDED
+```
+
 ---
 
 ## How Detection Works
@@ -118,7 +135,7 @@ All rules are matched case-insensitively (`re.IGNORECASE`), so keyword casing ca
 
 ## Rate Limiting
 
-The rate limiter uses a **sliding window**, not a fixed one — it recalculates the valid request count on every single request rather than resetting a counter at fixed intervals. This avoids the classic "burst at window boundary" exploit that fixed-window rate limiters are vulnerable to.
+The rate limiter uses a **sliding window**, not a fixed one — it recalculates the valid request count on every single request rather than resetting a counter at fixed intervals. This avoids the classic "burst at window boundary" exploit that fixed-window rate limiters are vulnerable to!
 
 ---
 
@@ -126,27 +143,39 @@ The rate limiter uses a **sliding window**, not a fixed one — it recalculates 
 
 **Project setup and server running**
 
-![VS Code setup and Flask server running](Screenshot/01_vscode_flask_bootstrap_and_server_running.png)
+![VS Code setup and Flask server running]
+<img width="1919" height="887" alt="01 vscode flask bootstrap and server running" src="https://github.com/user-attachments/assets/829c5097-965f-40df-b823-887151dd352e" />
+
 
 **WAF rule engine — SQL Injection pattern and detection logic**
 
-![SQL pattern and check function](Screenshot/06_vscode_sql_pattern_and_check_sqli_function.png)
+![SQL pattern and check function]
+<img width="1917" height="1022" alt="06 vscode sql pattern and check sqli function" src="https://github.com/user-attachments/assets/667f65d1-5e3b-4833-8dde-8448e51b09b9" />
+
 
 **Attack simulation — SQL Injection blocked**
 
-![SQL Injection blocked](Screenshot/09_browser_sql_injection_boolean_bypass_blocked.png)
+![SQL Injection blocked]
+<img width="1919" height="1023" alt="09 browser sql injection boolean bypass blocked" src="https://github.com/user-attachments/assets/7076af89-5856-41d0-b278-93b2cd090566" />
+
 
 **Attack simulation — XSS blocked**
 
-![XSS blocked](Screenshot/22_browser_xss_attack_blocked_final.png)
+![XSS blocked]
+<img width="1919" height="1021" alt="21_browser_clean_request_allowed_final" src="https://github.com/user-attachments/assets/64ec2df6-41bd-4438-b3d2-f79a9f0ca697" />
+
 
 **Rate limiter triggering a block on the 6th request**
 
-![Rate limit blocked](Screenshot/20_browser_rate_limit_6th_request_blocked.png)
+![Rate limit blocked]
+<img width="1912" height="1027" alt="20 browser rate limit 6th request blocked" src="https://github.com/user-attachments/assets/b6bb75a8-70b7-4995-baac-ae9027a57af1" />
+
 
 **Live dashboard**
 
-![Dashboard](Screenshot/25_browser_dashboard_full_view.png)
+![Dashboard]
+<img width="1919" height="1028" alt="25_browser dashboard full view" src="https://github.com/user-attachments/assets/c5baba6a-a19b-40d1-b96e-42023712977b" />
+
 
 *(Additional screenshots covering every module and attack category are available in the [`/Screenshot`](./Screenshot) folder.)*
 
@@ -160,7 +189,7 @@ SentinelShield was validated using a structured 40-case test suite covering all 
 
 ## Scope and Limitations
 
-This project is a **single-file, single-process educational implementation**, built to demonstrate WAF/IDS concepts clearly and transparently — it is not intended for production deployment. Specifically:
+This project is a **single-file, single-process educational implementation**, built to clearly and transparently demonstrate WAF/IDS concepts — it is not intended for production deployment. Specifically:
 
 - Detection is signature-based only; it does not catch novel or heavily obfuscated attacks
 - Only URL query parameters are inspected — POST bodies, cookies, and headers are currently out of scope
@@ -188,11 +217,8 @@ This project is licensed under the MIT License — see the [LICENSE](./LICENSE) 
 ## Author
 
 **Indrajeet Dhondugade**
-Built as a Cybersecurity Practical Project — Web Application Security domain.
 
-update READme
+Built as a cybersecurity practical project in the web application security domain, developed over an 8-day design, development, and testing cycle using Python 3 and Flask.
 
-
-
-
-└── Screenshot/             # Development and testing screenshots
+- 🔗 GitHub: [@indrajeetdhondugade](https://github.com/indrajeetdhondugade)
+- 📧 Feel free to reach out with questions, feedback, or suggestions for improvement.
